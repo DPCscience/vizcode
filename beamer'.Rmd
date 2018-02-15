@@ -1,0 +1,40 @@
+---
+title: "beamer"
+author: "John Doe"
+date: "March 22, 2005"
+output:
+  ioslides_presentation: default
+  beamer_presentation: default
+---
+# In the morning
+
+## Getting up
+
+- Turn off alarm
+- Get out of bed
+
+## Breakfast
+
+- Eat eggs
+- Drink coffee
+
+# In the evening
+
+## Dinner
+
+- Eat spaghetti
+- Drink wine
+
+## dygraphs
+
+```{r g, echo=FALSE}
+knitr::opts_chunk$set(fig.width=12, fig.height=8) 
+library(ggplot2)
+library(ggiraph)
+g <- ggplot(mpg, aes( x = displ, y = cty, color = hwy) )
+my_gg <- g + geom_point_interactive(aes(tooltip = model), size = 2) 
+ggiraph(code = print(my_gg) )
+```
+
+
+----

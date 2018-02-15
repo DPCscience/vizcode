@@ -1,0 +1,53 @@
+---
+title: "visualization"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## ggiraph
+
+```{r cars}
+library("ggplot2")
+library("ggiraph")
+head(mpg)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r g, echo=FALSE}
+g <- ggplot(mpg, aes( x = displ, y = cty, color = hwy) )
+my_gg <- g + geom_point_interactive(aes(tooltip = model), size = 2) 
+ggiraph(code = print(my_gg) )
+```
+
+#Dygraphs
+```{r}
+library(dygraphs)
+lungDeaths <- cbind(mdeaths, fdeaths)
+dygraph(lungDeaths)
+```
+
+#gganimate
+Installation of brew install imagemagick is necessary
+
+Example from https://github.com/dgrtwo/gganimate
+```{r}
+
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, fig.show = "animate")
+#devtools::install_github("dgrtwo/gganimate")
+library(ggplot2)
+library(gganimate)
+library(gapminder)
+
+p <- ggplot(gapminder, aes(gdpPercap, lifeExp, size = pop, color = continent, frame = year)) +
+  geom_point() +
+  scale_x_log10()
+gganimate(p)
+
+```
+
