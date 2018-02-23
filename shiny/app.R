@@ -1,8 +1,68 @@
-install.packages("shiny")
-#library(shiny)
-#runExample("01_hello")
-
 library(shiny)
-ui <- fluidPage()
-server <- function(input, output) {}
+library(ggplot2)
+library(dplyr)
+
+bcl <- read.csv("bcl-data.csv", stringsAsFactors = FALSE)
+
+ui <- fluidPage(
+  titlePanel("Building Shiny Apps"),
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput("priceInput", "Price", 0, 100, c(25, 40), pre = "$"),
+      radioButtons("typeInput", "Product type",
+                   choices = c("BEER", "REFRESHMENT", "SPIRITS", "WINE"),
+                   selected = "WINE"),
+      selectInput("countryInput", "Country",
+                  choices = c("CANADA", "FRANCE", "ITALY"))
+    ),
+    mainPanel(
+      plotOutput("coolplot"),
+      br(), br(),
+      h2(textOutput("number")),
+      tableOutput("results")
+      
+    )
+  )
+)
+
+server <- function(input, output) {
+  output$coolplot <- renderPlot({
+    filtered <-
+      bcl %>%
+      filter(Price >= input$priceInput[1],
+             Price <= input$priceInput[2],
+             Type == input$typeInput,
+             Country == input$countryInput
+      )
+    ggplot(filtered, aes(Alcohol_Content)) +
+      geom_histogram()
+  })
+  
+  output$number <- renderText({
+    filtered <-
+      bcl %>%
+      filter(Price >= input$priceInput[1],
+             Price <= input$priceInput[2],
+             Type == input$typeInput,
+             Country == input$countryInput
+      )
+    filter2<-nrow(filtered)
+    filter2
+  })
+  
+  output$results <- renderTable({
+    filtered <-
+      bcl %>%
+      filter(Price >= input$priceInput[1],
+             Price <= input$priceInput[2],
+             Type == input$typeInput,
+             Country == input$countryInput
+      )
+    filtered
+  })
+  
+
+  
+}
+
 shinyApp(ui = ui, server = server)
