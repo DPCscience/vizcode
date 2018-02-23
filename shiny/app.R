@@ -25,44 +25,67 @@ ui <- fluidPage(
   )
 )
 
-server <- function(input, output) {
-  output$coolplot <- renderPlot({
-    filtered <-
-      bcl %>%
-      filter(Price >= input$priceInput[1],
-             Price <= input$priceInput[2],
-             Type == input$typeInput,
-             Country == input$countryInput
-      )
-    ggplot(filtered, aes(Alcohol_Content)) +
-      geom_histogram()
-  })
+#server <- function(input, output) {
+#  output$coolplot <- renderPlot({
+#    filtered <-
+#      bcl %>%
+#      filter(Price >= input$priceInput[1],
+#             Price <= input$priceInput[2],
+#             Type == input$typeInput,
+#             Country == input$countryInput
+#      )
+#    ggplot(filtered, aes(Alcohol_Content)) +
+#      geom_histogram()
+#  })
   
-  output$number <- renderText({
-    filtered <-
-      bcl %>%
-      filter(Price >= input$priceInput[1],
-             Price <= input$priceInput[2],
-             Type == input$typeInput,
-             Country == input$countryInput
-      )
-    filter2<-nrow(filtered)
-    filter2
-  })
+#  output$number <- renderText({
+#    filtered <-
+#     bcl %>%
+#      filter(Price >= input$priceInput[1],
+#            Price <= input$priceInput[2],
+#             Type == input$typeInput,
+#             Country == input$countryInput
+#    )
+#   filter2<-nrow(filtered)
+#    filter2
+#  })
   
-  output$results <- renderTable({
-    filtered <-
-      bcl %>%
-      filter(Price >= input$priceInput[1],
-             Price <= input$priceInput[2],
-             Type == input$typeInput,
-             Country == input$countryInput
-      )
-    filtered
-  })
+ # output$results <- renderTable({
+ #   filtered <-
+#      bcl %>%
+#      filter(Price >= input$priceInput[1],
+#             Price <= input$priceInput[2],
+#            Type == input$typeInput,
+#             Country == input$countryInput
+#      )
+#    filtered
+   
+    
+ # })
   
 
-  
+#}
+
+server <- function(input, output) {
+filtered <- reactive({
+  bcl %>%
+    filter(Price >= input$priceInput[1],
+           Price <= input$priceInput[2],
+           Type == input$typeInput,
+           Country == input$countryInput
+    )
+})
+
+output$coolplot <- renderPlot({
+  ggplot(filtered(), aes(Alcohol_Content)) +
+    geom_histogram()
+})
+
+output$results <- renderTable({
+  filtered()
+})
+
 }
+
 
 shinyApp(ui = ui, server = server)
